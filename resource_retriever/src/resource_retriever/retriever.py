@@ -1,4 +1,4 @@
-import roslib; roslib.load_manifest('resource_retriever2')
+import roslib; roslib.load_manifest('resource_retriever')
 import rospy
 import subprocess
 import urlgrabber, string
