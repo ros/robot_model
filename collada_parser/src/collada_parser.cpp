@@ -409,16 +409,15 @@ public:
     ColladaModelReader(boost::shared_ptr<ModelInterface> model) : _dom(NULL), _nGlobalSensorId(0), _nGlobalManipulatorId(0), _model(model) {
         daeErrorHandler::setErrorHandler(this);
         _resourcedir = ".";
+        _collada = new DAE();
     }
     virtual ~ColladaModelReader() {
         _vuserdata.clear();
-        _collada.reset();
-        DAE::cleanup();
+	//delete _collada;
     }
 
     bool InitFromFile(const std::string& filename) {
         ROS_DEBUG_STREAM(str(boost::format("init COLLADA reader version: %s, namespace: %s, filename: %s\n")%COLLADA_VERSION%COLLADA_NAMESPACE%filename));
-        _collada.reset(new DAE);
         _dom = _collada->open(filename);
         if (!_dom) {
             return false;
@@ -437,7 +436,6 @@ public:
 
     bool InitFromData(const std::string& pdata) {
         ROS_DEBUG_STREAM(str(boost::format("init COLLADA reader version: %s, namespace: %s\n")%COLLADA_VERSION%COLLADA_NAMESPACE));
-        _collada.reset(new DAE);
         _dom = _collada->openFromMemory(".",pdata.c_str());
         if (!_dom) {
             return false;
@@ -2659,7 +2657,7 @@ protected:
         return v;
     }
 
-    boost::shared_ptr<DAE> _collada;
+    DAE* _collada;
     domCOLLADA* _dom;
     std::vector<USERDATA> _vuserdata; // all userdata
     int _nGlobalSensorId, _nGlobalManipulatorId;
