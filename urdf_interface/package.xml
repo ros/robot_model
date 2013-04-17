@@ -7,11 +7,16 @@
     This package contains URDF C++ interface headers that define the
     user API to the C++ URDF model.
   </description>
+
   <author>Wim Meeussen</author>
   <author>John Hsu</author>
   <maintainer email="isucan@willowgarage.com">Ioan Sucan</maintainer>
+
   <license>BSD</license>
+
   <url type="website">http://ros.org/wiki/urdf_interface</url>
+  <url type="repository">https://github.com/ros/robot_model</url>
+  <url type="bugtracker">https://github.com/ros/robot_model/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
@@ -20,5 +25,3 @@
   <run_depend>urdfdom</run_depend>
 
 </package>
-
-
