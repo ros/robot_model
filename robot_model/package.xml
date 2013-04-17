@@ -9,40 +9,16 @@
     object model (C++) of the robot.
   </description>
 
-  <author email="isucan@willowgarage.com">Maintained by Ioan Sucan</author>
+  <author email="isucan@willowgarage.com">Ioan Sucan</author>
   <maintainer email="isucan@willowgarage.com">Ioan Sucan</maintainer>
 
-  <license>BSD</license>  
-  <license>GPL</license>
-  <license>MIT</license>  
+  <license>BSD</license>
 
   <url type="website">http://ros.org/wiki/robot_model</url>
+  <url type="repository">https://github.com/ros/robot_model</url>
+  <url type="bugtracker">https://github.com/ros/robot_model/issues</url>
 
   <buildtool_depend>catkin</buildtool_depend>
-
-  <build_depend>angles</build_depend> 
-  <build_depend>assimp</build_depend>
-  <build_depend>collada-dom</build_depend>
-  <build_depend>collada_parser</build_depend>
-  <build_depend>collada_urdf</build_depend>
-  <build_depend>common_msgs</build_depend>
-  <build_depend>convex_decomposition</build_depend>
-  <build_depend>curl</build_depend>
-  <build_depend>geometry</build_depend>
-  <build_depend>graphviz</build_depend>
-  <build_depend>ivcon</build_depend>
-  <build_depend>kdl_parser</build_depend>
-  <build_depend>orocos_kdl</build_depend> 
-  <build_depend>resource_retriever</build_depend>
-  <build_depend>ros</build_depend>
-  <build_depend>ros_comm</build_depend> 
-  <build_depend>rosconsole_bridge</build_depend>
-  <build_depend>srdf</build_depend>
-  <build_depend>urdf</build_depend>
-  <build_depend>urdf_interface</build_depend>
-  <build_depend>urdf_parser</build_depend>
-  <build_depend>urdfdom</build_depend>
-  <build_depend>urdfdom_headers</build_depend>
   
   <run_depend>angles</run_depend> 
   <run_depend>assimp</run_depend>
@@ -56,10 +32,10 @@
   <run_depend>graphviz</run_depend>
   <run_depend>ivcon</run_depend>
   <run_depend>kdl_parser</run_depend>
-  <run_depend>orocos_kdl</run_depend> 
+  <run_depend>orocos_kdl</run_depend>
   <run_depend>resource_retriever</run_depend>
   <run_depend>ros</run_depend>
-  <run_depend>ros_comm</run_depend> 
+  <run_depend>ros_comm</run_depend>
   <run_depend>rosconsole_bridge</run_depend>
   <run_depend>srdf</run_depend>
   <run_depend>urdf</run_depend>
@@ -69,7 +45,7 @@
   <run_depend>urdfdom_headers</run_depend>
 
   <!-- Add this dep for backward compatibility -->
-  <run_depend>robot_state_publisher</run_depend> 
+  <run_depend>robot_state_publisher</run_depend>
 
   <export>
     <metapackage/>
