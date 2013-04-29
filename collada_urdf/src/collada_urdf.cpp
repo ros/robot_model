@@ -1458,7 +1458,12 @@ protected:
     }
 
     void _loadVertices(const std::vector<Triangle> vertices, domGeometryRef pdomgeom) {
+#if defined(IS_ASSIMP3)
+            // aiScene::aiScene is a hidden symbol in assimp 3; so we hack..
+            aiScene* scene = (aiScene*)malloc(sizeof(aiScene));
+#else
             aiScene* scene = new aiScene();
+#endif
             scene->mRootNode = new aiNode();
             scene->mRootNode->mNumMeshes = 1;
             scene->mRootNode->mMeshes  = (unsigned int*)malloc(sizeof(unsigned int));
