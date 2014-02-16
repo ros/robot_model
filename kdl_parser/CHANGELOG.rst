@@ -2,7 +2,7 @@
 Changelog for package kdl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.11.0 (2014-02-15)
+1.10.19 (2014-02-15)
 -------------------
 * fix test at kdl_parser
 * Contributors: YoheiKakiuchi

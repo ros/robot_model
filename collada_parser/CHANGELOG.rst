@@ -2,7 +2,7 @@
 Changelog for package collada_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-1.11.0 (2014-02-15)
+1.10.19 (2014-02-15)
 -------------------
 * fix, joint axis should be rotated depend on local coords
 * fix overwriting velocity limit
