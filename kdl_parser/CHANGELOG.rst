@@ -2,6 +2,11 @@
 Changelog for package kdl_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.10.19 (2014-02-15)
+-------------------
+* fix test at kdl_parser
+* Contributors: YoheiKakiuchi
+
 1.10.18 (2013-12-04)
 --------------------
 * add DEPENDS for kdl_parser
