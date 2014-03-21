@@ -1140,48 +1140,49 @@ protected:
         }
 
         plink->visual->geometry = _CreateGeometry(plink->name, listGeomProperties);
-        // visual_groups
-        boost::shared_ptr<std::vector<boost::shared_ptr<Visual > > > viss;
-        viss.reset(new std::vector<boost::shared_ptr<Visual > >);
-        viss->push_back(plink->visual);
-        plink->visual_groups.insert(std::make_pair("default", viss));
+        // visual_groups deprecated
+        //boost::shared_ptr<std::vector<boost::shared_ptr<Visual > > > viss;
+        //viss.reset(new std::vector<boost::shared_ptr<Visual > >);
+        //viss->push_back(plink->visual);
+        //plink->visual_groups.insert(std::make_pair("default", viss));
 
-        // collision
-        plink->collision.reset(new Collision());
-        plink->collision->geometry = plink->visual->geometry;
-        plink->collision->origin   = plink->visual->origin;
+        if( !plink->visual->geometry ) {
+          plink->visual.reset();
+          plink->collision.reset();
+        } else {
+          // collision
+          plink->collision.reset(new Collision());
+          plink->collision->geometry = plink->visual->geometry;
+          plink->collision->origin   = plink->visual->origin;
+        }
 
-        // collision_groups
-        boost::shared_ptr<std::vector<boost::shared_ptr<Collision > > > cols;
-        cols.reset(new std::vector<boost::shared_ptr<Collision > >);
-        cols->push_back(plink->collision);
-        plink->collision_groups.insert(std::make_pair("default", cols));
+        // collision_groups deprecated
+        //boost::shared_ptr<std::vector<boost::shared_ptr<Collision > > > cols;
+        //cols.reset(new std::vector<boost::shared_ptr<Collision > >);
+        //cols->push_back(plink->collision);
+        //plink->collision_groups.insert(std::make_pair("default", cols));
 
         return plink;
     }
 
     boost::shared_ptr<Geometry> _CreateGeometry(const std::string& name, const std::list<GEOMPROPERTIES>& listGeomProperties)
     {
-        boost::shared_ptr<Mesh> geometry(new Mesh());
-        geometry->type = Geometry::MESH;
-        geometry->scale.x = 1;
-        geometry->scale.y = 1;
-        geometry->scale.z = 1;
-
         std::vector<std::vector<Vector3> > vertices;
         std::vector<std::vector<int> > indices;
         std::vector<Color> ambients;
         std::vector<Color> diffuses;
-        unsigned int index;
+        unsigned int index, vert_counter;
         vertices.resize(listGeomProperties.size());
         indices.resize(listGeomProperties.size());
         ambients.resize(listGeomProperties.size());
         diffuses.resize(listGeomProperties.size());
         index = 0;
+        vert_counter = 0;
         FOREACHC(it, listGeomProperties) {
             vertices[index].resize(it->vertices.size());
             for(size_t i = 0; i < it->vertices.size(); ++i) {
                 vertices[index][i] = _poseMult(it->_t, it->vertices[i]);
+                vert_counter++;
             }
             indices[index].resize(it->indices.size());
             for(size_t i = 0; i < it->indices.size(); ++i) {
@@ -1203,6 +1204,18 @@ protected:
             }
             index++;
         }
+
+        if (vert_counter == 0) {
+          boost::shared_ptr<Mesh> ret;
+          ret.reset();
+          return ret;
+        }
+
+        boost::shared_ptr<Mesh> geometry(new Mesh());
+        geometry->type = Geometry::MESH;
+        geometry->scale.x = 1;
+        geometry->scale.y = 1;
+        geometry->scale.z = 1;
 
         // have to save the geometry into individual collada 1.4 files since URDF does not allow triangle meshes to be specified
         std::stringstream daedata;
