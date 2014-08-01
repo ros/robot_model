@@ -2,8 +2,8 @@
 Changelog for package collada_parser
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Forthcoming
------------
+1.10.20 (2014-08-01)
+--------------------
 * Added extract actuators, fix for using nominal torque
 * Removed visual and collision meshes if there are no vertices
 * Removed use of visual and collision groups
