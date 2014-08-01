@@ -2,6 +2,12 @@
 Changelog for package joint_state_publisher
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Update package.xml
+  Updating author and maintainer for consistency.
+* Contributors: David Lu!!
+
 1.10.19 (2014-02-15)
 -------------------
 * Use #!/usr/bin/env python for systems with multiple Python versions.

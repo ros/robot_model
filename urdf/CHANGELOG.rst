@@ -2,6 +2,9 @@
 Changelog for package urdf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.10.19 (2014-02-15)
 -------------------
 * fix urdf files for test

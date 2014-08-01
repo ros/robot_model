@@ -2,6 +2,12 @@
 Changelog for package collada_urdf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+* Fix clash with assimp 3.1 in CMake.
+* Now stores original mesh file name and location
+* Contributors: Benjamin Chrétien, YoheiKakiuchi
+
 1.10.19 (2014-02-15)
 -------------------
 * Use VERSION_LESS instead of STRLESS
