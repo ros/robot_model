@@ -2,6 +2,9 @@
 Changelog for package collada_urdf
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+Forthcoming
+-----------
+
 1.10.20 (2014-08-01)
 --------------------
 * Fix clash with assimp 3.1 in CMake.
