@@ -10,8 +10,12 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(TinyXML REQUIRED)
 
-find_package(PkgConfig)
-pkg_check_modules(libpcrecpp libpcrecpp)
+if (ANDROID)
+  find_package(libpcrecpp)
+else()
+  find_package(PkgConfig)
+  pkg_check_modules(libpcrecpp libpcrecpp)
+endif()
 
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
