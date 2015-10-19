@@ -19,7 +19,7 @@
   <buildtool_depend version_gte="0.5.68">catkin</buildtool_depend>
 
   <build_depend>angles</build_depend>
-  <build_depend>assimp</build_depend>
+  <build_depend>assimp-dev</build_depend>
   <build_depend>resource_retriever</build_depend>
   <build_depend>collada-dom</build_depend>
   <build_depend>collada_parser</build_depend>
@@ -32,7 +32,7 @@
   <build_depend>cmake_modules</build_depend>
 
   <run_depend>angles</run_depend>
-  <run_depend>assimp</run_depend>
+  <run_depend>assimp-dev</run_depend>
   <run_depend>collada-dom</run_depend>
   <run_depend>collada_parser</run_depend>
   <run_depend>resource_retriever</run_depend>
