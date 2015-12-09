@@ -30,5 +30,7 @@
   <run_depend>rosconsole</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>urdf</run_depend>
+  <run_depend>urdf_parser_py</run_depend>
+  <run_depend>python_orocos_kdl</run_depend>
 
 </package>
