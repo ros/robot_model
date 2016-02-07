@@ -5,7 +5,7 @@ find_package(Boost REQUIRED thread)
 find_package(urdfdom REQUIRED)
 find_package(urdfdom_headers REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
-  urdf_parser_plugin pluginlib rosconsole_bridge roscpp cmake_modules)
+  urdf_parser_plugin pluginlib rosconsole_bridge roscpp cmake_modules std_srvs)
 
 
 find_package(TinyXML REQUIRED)
