@@ -36,8 +36,6 @@
 
 #include "urdf/model.h"
 
-#include <ros/ros.h>
-
 /* we include the default parser for plain URDF files; 
    other parsers are loaded via plugins (if available) */
 #include <urdf_parser/urdf_parser.h>
@@ -62,7 +60,6 @@ static bool IsColladaData(const std::string& data)
 
 bool Model::initFile(const std::string& filename)
 {
-
   // get the entire file
   std::string xml_string;
   std::fstream xml_file(filename.c_str(), std::fstream::in);
@@ -111,8 +108,7 @@ bool Model::initParam(const std::string& param, bool reload_robot_model)
   ros::NodeHandle nh;
   if (reload_robot_model) {
     // Advertise the trigger service
-    // TODO save service pointer
-    ros::ServiceServer server = nh.advertiseService(
+    reload_model_server_ = nh.advertiseService(
       "/reload_robot_model", &Model::reloadModelCallback, this);
   }
   return Model::loadFromParameterServer(param);
@@ -199,10 +195,10 @@ bool Model::initString(const std::string& xml_string)
 }
 
 bool Model::reloadModelCallback(
-  std_srvs::Trigger::Request& request,
+  std_srvs::Trigger::Request& /* request */,
   std_srvs::Trigger::Response& response)
 {
-  // TODO Bind parameter name to this class
+  // TODO Bind parameter key ("robot_description") to this class
   response.success = Model::loadFromParameterServer("robot_description");
   return response.success;
 }

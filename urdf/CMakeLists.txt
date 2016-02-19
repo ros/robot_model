@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(urdf)
 
+if(NOT WIN32)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
+endif()
+
 find_package(Boost REQUIRED thread)
 find_package(urdfdom REQUIRED)
 find_package(urdfdom_headers REQUIRED)
@@ -43,12 +47,14 @@ if(CATKIN_ENABLE_TESTING)
   find_package(catkin REQUIRED COMPONENTS rostest)
   add_rostest_gtest(test_urdf_parser test/test_robot_model_parser.launch test/test_robot_model_parser.cpp)
   target_link_libraries(test_urdf_parser ${PROJECT_NAME})
+
+  add_rostest_gtest(test_reload_robot_model
+                   test/test_reload_robot_model.launch
+                   test/test_reload_robot_model.cpp)
+  target_link_libraries(test_reload_robot_model ${PROJECT_NAME})
 endif()
 
-# no idea how CATKIN does this
-# rosbuild_add_rostest(${PROJECT_SOURCE_DIR}/test/test_robot_model_parser.launch)
-
-install(TARGETS ${PROJECT_NAME} 
+install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})

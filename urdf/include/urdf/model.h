@@ -42,6 +42,7 @@
 #include <urdf_model/model.h>
 #include <tinyxml.h>
 
+#include <ros/ros.h>
 #include <std_srvs/Trigger.h>
 
 namespace urdf{
@@ -63,8 +64,7 @@ public:
 protected:
   bool loadFromParameterServer(const std::string & param);
   bool reloadModelCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
-
-  // TODO need a mutex in ModelInterface to protect in-memory representation
+  ros::ServiceServer reload_model_server_;
 };
 
 }
