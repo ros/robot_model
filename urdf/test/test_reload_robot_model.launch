@@ -1,10 +1,9 @@
 <launch>
   <param name="robot_description" textfile="$(find urdf)/test/test_robot.urdf" />
-  <param name="new_robot_description" textfile="$(find urdf)/test/test_one_link.urdf" />
+  <param name="new_robot_description" textfile="$(find urdf)/test/one_link.urdf" />
   <!-- not sure if we need args -->
   <!-- args: path, urdf file, robot name, root name, #joints, #links-->
-  <test test-name="reload_robot_model_test"
+  <test test-name="test_reload_robot_model"
         pkg="urdf"
-        type="test_reload_robot_model"
-        args="$(find urdf) test_robot.urdf r2d2 dummy_link 16 17" />
+        type="test_reload_robot_model" />
 </launch>

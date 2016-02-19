@@ -51,24 +51,31 @@ TEST(TestURDF, reload_robot_model)
   urdf::Model model;
   // Initialize the model with reload_robot_model set as true
   ASSERT_TRUE(model.initParam(parameter_key, true));
+  ros::spinOnce();
   EXPECT_EQ(model.name_, "r2d2");
   EXPECT_EQ(model.links_.size(), 17);
+  ROS_DEBUG("Initialized model");
 
   ros::NodeHandle node_handle;
   auto reload_model_client = node_handle.serviceClient<std_srvs::Trigger>("/reload_robot_model");
+  ROS_DEBUG("Initialized client");
 
-  // read text from new_robot_dscription a
+  // read text from new_robot_description
   ASSERT_TRUE(node_handle.hasParam(new_parameter_key));
   std::string new_urdf;
   node_handle.getParam(new_parameter_key, new_urdf);
   ASSERT_TRUE(node_handle.hasParam(parameter_key));
   node_handle.setParam(parameter_key, new_urdf);
+  ROS_DEBUG("Got and set params");
 
   std_srvs::Trigger::Request req;
   std_srvs::Trigger::Response res;
 
   // may have to wait a second for the parameter server to get the update?
+  ASSERT_TRUE(ros::service::waitForService("/reload_robot_model", 1000));
+  ROS_DEBUG("waited for service");
   ASSERT_TRUE(reload_model_client.call(req, res));
+  ROS_DEBUG("client call successful");
 
   // Check the new model representation
   EXPECT_EQ(model.name_, "one_link");
