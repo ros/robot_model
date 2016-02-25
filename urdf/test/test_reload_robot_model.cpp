@@ -48,17 +48,18 @@ const std::string new_parameter_key = "new_robot_description";
  */
 TEST(TestURDF, reload_robot_model)
 {
+  ROS_INFO("Entering reload robot model case");
   urdf::Model model;
   // Initialize the model with reload_robot_model set as true
   ASSERT_TRUE(model.initParam(parameter_key, true));
-  ros::spinOnce();
   EXPECT_EQ(model.name_, "r2d2");
   EXPECT_EQ(model.links_.size(), 17);
-  ROS_DEBUG("Initialized model");
+  ROS_INFO("Initialized model");
 
+  ros::AsyncSpinner spinner(1);
   ros::NodeHandle node_handle;
   auto reload_model_client = node_handle.serviceClient<std_srvs::Trigger>("/reload_robot_model");
-  ROS_DEBUG("Initialized client");
+  ROS_INFO("Initialized client");
 
   // read text from new_robot_description
   ASSERT_TRUE(node_handle.hasParam(new_parameter_key));
@@ -66,25 +67,30 @@ TEST(TestURDF, reload_robot_model)
   node_handle.getParam(new_parameter_key, new_urdf);
   ASSERT_TRUE(node_handle.hasParam(parameter_key));
   node_handle.setParam(parameter_key, new_urdf);
-  ROS_DEBUG("Got and set params");
+  ROS_INFO("Got and set params");
 
   std_srvs::Trigger::Request req;
   std_srvs::Trigger::Response res;
 
   // may have to wait a second for the parameter server to get the update?
+
+  spinner.start();
   ASSERT_TRUE(ros::service::waitForService("/reload_robot_model", 1000));
-  ROS_DEBUG("waited for service");
+  ROS_INFO("waited for service");
+  //ros::spinOnce();
   ASSERT_TRUE(reload_model_client.call(req, res));
-  ROS_DEBUG("client call successful");
+  ROS_INFO("client call successful");
 
   // Check the new model representation
   EXPECT_EQ(model.name_, "one_link");
   EXPECT_EQ(model.links_.size(), 1);
+  spinner.stop();
 }
 
 
-/* Multithreaded case
- * Lock model accesses
+/* TODO: Multithreaded case
+ * Access the same model with many concurrent threads
+ * Need to lock model object
  */
 
 
@@ -96,6 +102,7 @@ TEST(TestURDF, reload_robot_model)
 
 int main(int argc, char** argv)
 {
+  ROS_INFO("Initializing reload robot model test");
   ros::init(argc, argv, "test_mutable_robot_description");
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

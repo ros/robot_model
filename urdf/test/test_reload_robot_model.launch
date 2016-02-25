@@ -5,5 +5,5 @@
   <!-- args: path, urdf file, robot name, root name, #joints, #links-->
   <test test-name="test_reload_robot_model"
         pkg="urdf"
-        type="test_reload_robot_model" />
+        type="test_reload_robot_model"/>
 </launch>
