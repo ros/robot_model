@@ -72,12 +72,9 @@ TEST(TestURDF, reload_robot_model)
   std_srvs::Trigger::Request req;
   std_srvs::Trigger::Response res;
 
-  // may have to wait a second for the parameter server to get the update?
-
   spinner.start();
   ASSERT_TRUE(ros::service::waitForService("/reload_robot_model", 1000));
   ROS_INFO("waited for service");
-  //ros::spinOnce();
   ASSERT_TRUE(reload_model_client.call(req, res));
   ROS_INFO("client call successful");
 
