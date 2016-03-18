@@ -44,9 +44,14 @@
 
 namespace urdf {
 
-/** retrieve all sensor parsers available in the system
-    through the plugin-lib mechanism */
-const urdf::SensorParserMap &getDefaultSensorParserMap();
+/** Retrieve sensor parsers available through the plugin-lib mechanism
+    whose name matches any of the names listed in allowed.
+    If allowed is empty (the default), all parsers will be returned.
+*/
+urdf::SensorParserMap getSensorParsers(const std::vector<std::string> &allowed = std::vector<std::string>());
+
+/** Conveniency method returning the SensorParserMap for the given sensor name */
+urdf::SensorParserMap getSensorParser(const std::string &name);
 
 /** parse <sensor> tags in URDF document */
 SensorMap parseSensors(TiXmlDocument &doc, const urdf::SensorParserMap &parsers);
