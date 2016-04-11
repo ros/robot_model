@@ -2,8 +2,8 @@
 
 import rospy
 import random
-#import wx
-#import wx.lib.newevent
+
+from python_qt_binding.QtCore import Signal
 from python_qt_binding.QtCore import Qt
 from python_qt_binding.QtGui import QTextOption
 from python_qt_binding.QtGui import QFont
@@ -159,9 +159,8 @@ class JointStatePublisher():
                 joint['effort'] = effort
 
         if self.gui is not None:
-            # post an event here instead of directly calling the update_sliders method, to switch to the wx thread
-            # wx.PostEvent(self.gui.GetEventHandler(), self.gui.UpdateSlidersEvent())
-            qt
+            # signal instead of directly calling the update_sliders method, to switch to the QThread
+            self.gui.sliderUpdateTrigger.emit()
             pass
 
 
@@ -245,6 +244,8 @@ class JointStatePublisher():
                     joint['forward'] = not forward
 
 class JointStatePublisherGui(QWidget):
+    sliderUpdateTrigger = Signal()
+
     def __init__(self, title, jsp):
         super(JointStatePublisherGui, self).__init__()
         self.jsp = jsp
@@ -270,7 +271,6 @@ class JointStatePublisherGui(QWidget):
             display = QLineEdit("0.00")
             display.setAlignment(Qt.AlignRight)
             display.setFont(font)
-            # TODO Add ability to input joint value
             display.setReadOnly(True)
             row_layout.addWidget(display)
 
@@ -291,9 +291,11 @@ class JointStatePublisherGui(QWidget):
                                     'slider':slider, 'joint':joint}
             slider.valueChanged.connect(self.sliderUpdate)
 
+        # Synchronize slider and displayed value
         self.sliderUpdate(None)
-        # self.UpdateSlidersEvent, self.EVT_UPDATESLIDERS = wx.lib.newevent.NewEvent()
-        # self.Bind(self.EVT_UPDATESLIDERS, self.updateSliders)
+
+        # Set up a signal for updating the sliders based on external joint info
+        self.sliderUpdateTrigger.connect(self.updateSliders)
 
         ### Buttons ###
         self.randbutton = QPushButton('Randomize', self)
@@ -302,10 +304,6 @@ class JointStatePublisherGui(QWidget):
         self.ctrbutton = QPushButton('Center', self)
         self.ctrbutton.clicked.connect(self.center_event)
         box_layout.addWidget(self.ctrbutton)
-
-        # wx.EVT_BUTTON(self, 1, self.randomize_event)
-        #wx.EVT_BUTTON(self, 2, self.center_event)
-
 
 
     def update_values(self):
@@ -369,7 +367,6 @@ if __name__ == '__main__':
         if jsp.gui is None:
             jsp.loop()
         else:
-            # qthread? Argh
             Thread(target=jsp.loop).start()
             jsp.app.exec_()
 
