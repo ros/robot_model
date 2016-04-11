@@ -286,7 +286,7 @@ class JointStatePublisherGui(QWidget):
             self.joint_map[name] = {'slidervalue': 0, 'display': display,
                                     'slider': slider, 'joint': joint}
             # Connect to the signal provided by QSignal
-            slider.valueChanged.connect(self.sliderUpdate)
+            slider.sliderMoved.connect(self.sliderUpdate)
 
         # Synchronize slider and displayed value
         self.sliderUpdate(None)
@@ -320,6 +320,7 @@ class JointStatePublisherGui(QWidget):
                                                            joint)
             joint_info['slider'].setValue(joint_info['slidervalue'])
             joint_info['display'].setText("%.2f" % joint['position'])
+
 
     def center_event(self, event):
         self.center()
