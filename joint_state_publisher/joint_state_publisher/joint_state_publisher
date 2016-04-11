@@ -283,12 +283,12 @@ class JointStatePublisherGui(QWidget):
             slider.setValue(RANGE/2)
 
             joint_layout.addWidget(slider)
-            # Connect to the Slider signal
 
             box_layout.addLayout(joint_layout)
 
             self.joint_map[name] = {'slidervalue':0, 'display':display,
                                     'slider':slider, 'joint':joint}
+            # Connect to the signal provided by QSignal
             slider.valueChanged.connect(self.sliderUpdate)
 
         # Synchronize slider and displayed value
