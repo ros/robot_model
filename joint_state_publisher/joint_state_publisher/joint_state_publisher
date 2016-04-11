@@ -3,18 +3,16 @@
 import rospy
 import random
 
-from python_qt_binding.QtCore import Signal
 from python_qt_binding.QtCore import Qt
-from python_qt_binding.QtGui import QTextOption
+from python_qt_binding.QtCore import Signal
 from python_qt_binding.QtGui import QFont
 from python_qt_binding.QtWidgets import QApplication
-from python_qt_binding.QtWidgets import QPushButton
 from python_qt_binding.QtWidgets import QHBoxLayout
 from python_qt_binding.QtWidgets import QLabel
-from python_qt_binding.QtWidgets import QSlider
 from python_qt_binding.QtWidgets import QLineEdit
-from python_qt_binding.QtWidgets import QVBoxLayout
+from python_qt_binding.QtWidgets import QPushButton
 from python_qt_binding.QtWidgets import QSlider
+from python_qt_binding.QtWidgets import QVBoxLayout
 from python_qt_binding.QtWidgets import QWidget
 
 import xml.dom.minidom
@@ -25,6 +23,7 @@ from sys import argv
 
 RANGE = 10000
 
+
 def get_param(name, value=None):
     private = "~%s" % name
     if rospy.has_param(private):
@@ -34,12 +33,13 @@ def get_param(name, value=None):
     else:
         return value
 
+
 class JointStatePublisher():
     def __init__(self):
         description = get_param('robot_description')
         robot = xml.dom.minidom.parseString(description).getElementsByTagName('robot')[0]
         self.free_joints = {}
-        self.joint_list = [] # for maintaining the original order of the joints
+        self.joint_list = []  # for maintaining the original order of the joints
         self.dependent_joints = get_param("dependent_joints", {})
         use_mimic = get_param('use_mimic_tags', True)
         use_small = get_param('use_smallest_joint_limits', True)
@@ -73,7 +73,7 @@ class JointStatePublisher():
                         continue
 
                 safety_tags = child.getElementsByTagName('safety_controller')
-                if use_small and len(safety_tags)==1:
+                if use_small and len(safety_tags) == 1:
                     tag = safety_tags[0]
                     if tag.hasAttribute('soft_lower_limit'):
                         minval = max(minval, float(tag.getAttribute('soft_lower_limit')))
@@ -81,7 +81,7 @@ class JointStatePublisher():
                         maxval = min(maxval, float(tag.getAttribute('soft_upper_limit')))
 
                 mimic_tags = child.getElementsByTagName('mimic')
-                if use_mimic and len(mimic_tags)==1:
+                if use_mimic and len(mimic_tags) == 1:
                     tag = mimic_tags[0]
                     entry = {'parent': tag.getAttribute('joint')}
                     if tag.hasAttribute('multiplier'):
@@ -102,7 +102,7 @@ class JointStatePublisher():
                 else:
                     zeroval = 0
 
-                joint = {'min':minval, 'max':maxval, 'zero':zeroval}
+                joint = {'min': minval, 'max': maxval, 'zero': zeroval}
                 if pub_def_positions:
                     joint['position'] = zeroval
                 if pub_def_vels:
@@ -113,7 +113,6 @@ class JointStatePublisher():
                 if jtype == 'continuous':
                     joint['continuous'] = True
                 self.free_joints[name] = joint
-
 
         use_gui = get_param("use_gui", False)
 
@@ -161,11 +160,9 @@ class JointStatePublisher():
         if self.gui is not None:
             # signal instead of directly calling the update_sliders method, to switch to the QThread
             self.gui.sliderUpdateTrigger.emit()
-            pass
-
 
     def loop(self):
-        hz = get_param("rate", 10) # 10hz
+        hz = get_param("rate", 10)  # 10hz
         r = rospy.Rate(hz)
 
         delta = get_param("delta", 0.0)
@@ -182,7 +179,7 @@ class JointStatePublisher():
             has_position = len(self.dependent_joints.items()) > 0
             has_velocity = False
             has_effort = False
-            for (name,joint) in self.free_joints.items():
+            for name, joint in self.free_joints.items():
                 if not has_position and 'position' in joint:
                     has_position = True
                 if not has_velocity and 'velocity' in joint:
@@ -197,7 +194,6 @@ class JointStatePublisher():
                 msg.velocity = num_joints * [0.0]
             if has_effort:
                 msg.effort = num_joints * [0.0]
-
 
             for i, name in enumerate(self.joint_list):
                 msg.name.append(str(name))
@@ -243,6 +239,7 @@ class JointStatePublisher():
                     joint['position'] = joint['min']
                     joint['forward'] = not forward
 
+
 class JointStatePublisherGui(QWidget):
     sliderUpdateTrigger = Signal()
 
@@ -277,7 +274,7 @@ class JointStatePublisherGui(QWidget):
             joint_layout.addLayout(row_layout)
 
             slider = QSlider(Qt.Horizontal)
-            
+
             slider.setFont(font)
             slider.setRange(0, RANGE)
             slider.setValue(RANGE/2)
@@ -286,8 +283,8 @@ class JointStatePublisherGui(QWidget):
 
             box_layout.addLayout(joint_layout)
 
-            self.joint_map[name] = {'slidervalue':0, 'display':display,
-                                    'slider':slider, 'joint':joint}
+            self.joint_map[name] = {'slidervalue': 0, 'display': display,
+                                    'slider': slider, 'joint': joint}
             # Connect to the signal provided by QSignal
             slider.valueChanged.connect(self.sliderUpdate)
 
@@ -305,9 +302,8 @@ class JointStatePublisherGui(QWidget):
         self.ctrbutton.clicked.connect(self.center_event)
         box_layout.addWidget(self.ctrbutton)
 
-
     def update_values(self):
-        for (name,joint_info) in self.joint_map.items():
+        for name, joint_info in self.joint_map.items():
             purevalue = joint_info['slidervalue']
             joint = joint_info['joint']
             value = self.sliderToValue(purevalue, joint)
@@ -318,19 +314,19 @@ class JointStatePublisherGui(QWidget):
         self.update_sliders()
 
     def update_sliders(self):
-        for (name,joint_info) in self.joint_map.items():
+        for name, joint_info in self.joint_map.items():
             joint = joint_info['joint']
             joint_info['slidervalue'] = self.valueToSlider(joint['position'],
                                                            joint)
             joint_info['slider'].setValue(joint_info['slidervalue'])
-            joint_info['display'].setText("%.2f"%joint['position'])
+            joint_info['display'].setText("%.2f" % joint['position'])
 
     def center_event(self, event):
         self.center()
 
     def center(self):
         rospy.loginfo("Centering")
-        for (name,joint_info) in self.joint_map.items():
+        for name, joint_info in self.joint_map.items():
             joint = joint_info['joint']
             joint_info['slidervalue'] = self.valueToSlider(joint['zero'], joint)
         self.update_values()
@@ -340,14 +336,13 @@ class JointStatePublisherGui(QWidget):
 
     def randomize(self):
         rospy.loginfo("Randomizing")
-        for (name,joint_info) in self.joint_map.items():
+        for name, joint_info in self.joint_map.items():
             joint = joint_info['joint']
             joint_info['slidervalue'] = self.valueToSlider(random.uniform(joint['min'], joint['max']), joint)
         self.update_values()
 
-
     def sliderUpdate(self, event):
-        for (name,joint_info) in self.joint_map.items():
+        for name, joint_info in self.joint_map.items():
             joint_info['slidervalue'] = joint_info['slider'].value()
         self.update_values()
 
@@ -370,4 +365,5 @@ if __name__ == '__main__':
             Thread(target=jsp.loop).start()
             jsp.app.exec_()
 
-    except rospy.ROSInterruptException: pass
+    except rospy.ROSInterruptException:
+        pass
