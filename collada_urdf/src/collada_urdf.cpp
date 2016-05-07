@@ -87,6 +87,14 @@
 
 using namespace std;
 
+#ifdef __arm__                 // fix for ARM build
+#include <strings.h>
+    bool Assimp::IOSystem::ComparePaths(const char *p1, const char *p2) const
+    {
+        return !::strcasecmp(p1, p2);
+    }
+#endif
+
 namespace ColladaDOM150 { }
 
 namespace collada_urdf {
