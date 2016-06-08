@@ -18,7 +18,7 @@ from python_qt_binding.QtWidgets import QWidget
 import xml.dom.minidom
 from sensor_msgs.msg import JointState
 from math import pi
-from threading import Thread
+import threading
 from sys import argv
 
 RANGE = 10000
@@ -161,14 +161,14 @@ class JointStatePublisher():
             # signal instead of directly calling the update_sliders method, to switch to the QThread
             self.gui.sliderUpdateTrigger.emit()
 
-    def loop(self):
+    def loop(self, stop_event=threading.Event()):
         hz = get_param("rate", 10)  # 10hz
         r = rospy.Rate(hz)
 
         delta = get_param("delta", 0.0)
 
         # Publish Joint States
-        while not rospy.is_shutdown():
+        while not rospy.is_shutdown() and not stop_event.is_set():
             msg = JointState()
             msg.header.stamp = rospy.Time.now()
 
@@ -363,8 +363,10 @@ if __name__ == '__main__':
         if jsp.gui is None:
             jsp.loop()
         else:
-            Thread(target=jsp.loop).start()
+            thread_stop = threading.Event()
+            threading.Thread(target=jsp.loop, kwargs={'stop_event':thread_stop}).start()
             jsp.app.exec_()
+            thread_stop.set()
 
     except rospy.ROSInterruptException:
         pass
