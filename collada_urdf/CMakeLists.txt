@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 2.8.12)
 project(collada_urdf)
 
 find_package(catkin REQUIRED COMPONENTS angles collada_parser resource_retriever urdf geometric_shapes tf cmake_modules)
@@ -9,6 +9,8 @@ catkin_package(
   LIBRARIES ${PROJECT_NAME}
   INCLUDE_DIRS include
   DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf)
+
+add_compile_options(-std=gnu++11)
 
 include_directories(include)
 
