@@ -5,12 +5,16 @@ find_package(catkin REQUIRED COMPONENTS angles collada_parser resource_retriever
 
 find_package(TinyXML REQUIRED)
 
+find_package(Eigen3 REQUIRED)
+
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
   INCLUDE_DIRS include
-  DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf)
+  CATKIN_DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf
+  DEPENDS EIGEN3)
 
 include_directories(include)
+include_directories(${EIGEN3_INCLUDE_DIR})
 
 find_package(assimp QUIET)
 if ( NOT ASSIMP_FOUND )
@@ -54,13 +58,13 @@ include_directories(${TinyXML_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 link_directories(${catkin_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} src/collada_urdf.cpp)
-target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}  
+target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}
   ${Boost_LIBRARIES} ${ASSIMP_LIBRARIES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILER_FLAGS "${ASSIMP_CXX_FLAGS} ${ASSIMP_CFLAGS_OTHER}")
-set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${ASSIMP_LINK_FLAGS}") 
+set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "${ASSIMP_LINK_FLAGS}")
 
 add_executable(urdf_to_collada src/urdf_to_collada.cpp)
-target_link_libraries(urdf_to_collada ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}  
+target_link_libraries(urdf_to_collada ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}
   ${Boost_LIBRARIES} ${PROJECT_NAME})
 
 add_executable(collada_to_urdf src/collada_to_urdf.cpp)
@@ -70,7 +74,7 @@ set_target_properties(collada_to_urdf PROPERTIES LINK_FLAGS "${ASSIMP_LINK_FLAGS
 
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(test_collada_writer test/test_collada_urdf.cpp)
-  target_link_libraries(test_collada_writer ${PROJECT_NAME} ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}  
+  target_link_libraries(test_collada_writer ${PROJECT_NAME} ${catkin_LIBRARIES} ${COLLADA_DOM_LIBRARIES}
     ${Boost_LIBRARIES})
 endif()
 
