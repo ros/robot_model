@@ -82,7 +82,7 @@
 #include <geometric_shapes/shapes.h>
 #include <geometric_shapes/mesh_operations.h>
 
-#define FOREACH(it, v) for(typeof((v).begin())it = (v).begin(); it != (v).end(); (it)++)
+#define FOREACH(it, v) for(__typeof__((v).begin())it = (v).begin(); it != (v).end(); (it)++)
 #define FOREACHC FOREACH
 
 using namespace std;
@@ -1428,14 +1428,14 @@ protected:
     }
 
     void _loadVertices(const shapes::Mesh *mesh, domGeometryRef pdomgeom) {
-	
+
 	// convert the mesh into an STL binary (in memory)
 	std::vector<char> buffer;
 	shapes::writeSTLBinary(mesh, buffer);
-	
+
 	// Create an instance of the Importer class
 	Assimp::Importer importer;
-	
+
 	// And have it read the given file with some postprocessing
 	const aiScene* scene = importer.ReadFileFromMemory(reinterpret_cast<const void*>(&buffer[0]), buffer.size(),
 							   aiProcess_Triangulate            |
@@ -1443,8 +1443,8 @@ protected:
 							   aiProcess_SortByPType            |
 							   aiProcess_OptimizeGraph          |
 							   aiProcess_OptimizeMeshes, "stl");
-	
-	// Note: we do this mesh -> STL -> assimp mesh because the aiScene::aiScene symbol is hidden by default 
+
+	// Note: we do this mesh -> STL -> assimp mesh because the aiScene::aiScene symbol is hidden by default
 
             domMeshRef pdommesh = daeSafeCast<domMesh>(pdomgeom->add(COLLADA_ELEMENT_MESH));
             domSourceRef pvertsource = daeSafeCast<domSource>(pdommesh->add(COLLADA_ELEMENT_SOURCE));
