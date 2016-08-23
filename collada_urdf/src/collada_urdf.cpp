@@ -82,7 +82,7 @@
 #include <geometric_shapes/shapes.h>
 #include <geometric_shapes/mesh_operations.h>
 
-#define FOREACH(it, v) for(typeof((v).begin())it = (v).begin(); it != (v).end(); (it)++)
+#define FOREACH(it, v) for(decltype((v).begin()) it = (v).begin(); it != (v).end(); (it)++)
 #define FOREACHC FOREACH
 
 using namespace std;
