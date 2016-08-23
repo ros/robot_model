@@ -40,6 +40,9 @@
 #include <vector>
 #include <list>
 
+#ifndef _WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #include <dae.h>
 #include <dae/daeDocument.h>
 #include <dae/daeErrorHandler.h>
@@ -49,6 +52,9 @@
 #include <dom/domElements.h>
 #include <dom/domTriangles.h>
 #include <dom/domTypes.h>
+#pragma GCC diagnostic pop
+#endif
+
 #include <resource_retriever/retriever.h>
 #include <urdf/model.h>
 #include <urdf_model/pose.h>

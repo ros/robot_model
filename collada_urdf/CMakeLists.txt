@@ -10,6 +10,7 @@ catkin_package(
   INCLUDE_DIRS include
   DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf)
 
+include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-std=c++11 HAS_STD_CPP11_FLAG)
 if(HAS_STD_CPP11_FLAG)
   add_compile_options(-std=c++11)
