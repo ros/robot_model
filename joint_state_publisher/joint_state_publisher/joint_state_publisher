@@ -12,7 +12,8 @@ from python_qt_binding.QtWidgets import QLabel
 from python_qt_binding.QtWidgets import QLineEdit
 from python_qt_binding.QtWidgets import QPushButton
 from python_qt_binding.QtWidgets import QSlider
-from python_qt_binding.QtWidgets import QVBoxLayout
+#from python_qt_binding.QtWidgets import QVBoxLayout
+from PyQt5.QtWidgets import QVBoxLayout
 #from python_qt_binding.QtWidgets import QGridLayout
 from PyQt5.QtWidgets import QGridLayout
 from python_qt_binding.QtWidgets import QSpinBox
@@ -251,7 +252,8 @@ class JointStatePublisherGui(QWidget):
         super(JointStatePublisherGui, self).__init__()
         self.jsp = jsp
         self.joint_map = {}
-        self.box_layout = QGridLayout(self)
+        self.vlayout = QVBoxLayout(self)
+        self.box_layout = QGridLayout()
         font = QFont("Helvetica", 9, QFont.Bold)
 
         self.num_sliders = 0
@@ -314,18 +316,20 @@ class JointStatePublisherGui(QWidget):
         # Set up a signal for updating the sliders based on external joint info
         self.sliderUpdateTrigger.connect(self.updateSliders)
 
+        self.vlayout.addLayout(self.box_layout)
+
         ### Buttons ###
         self.randbutton = QPushButton('Randomize', self)
         self.randbutton.clicked.connect(self.randomize_event)
-        self.box_layout.addWidget(self.randbutton)
+        self.vlayout.addWidget(self.randbutton)
         self.ctrbutton = QPushButton('Center', self)
         self.ctrbutton.clicked.connect(self.center_event)
-        self.box_layout.addWidget(self.ctrbutton)
+        self.vlayout.addWidget(self.ctrbutton)
         self.maxrowsupdown = QSpinBox()
         self.maxrowsupdown.setMinimum(0)
         self.maxrowsupdown.setValue(self.num_rows)
         self.maxrowsupdown.valueChanged.connect(self.reorggrid_event)
-        self.box_layout.addWidget(self.maxrowsupdown)
+        self.vlayout.addWidget(self.maxrowsupdown)
         rospy.logwarn(self.positions)
 
     def onValueChanged(self, event):
