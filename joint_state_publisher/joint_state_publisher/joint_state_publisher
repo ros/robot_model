@@ -25,6 +25,7 @@ from math import pi
 from threading import Thread
 import sys
 import signal
+import math
 
 RANGE = 10000
 
@@ -256,19 +257,8 @@ class JointStatePublisherGui(QWidget):
         self.gridlayout = QGridLayout()
         font = QFont("Helvetica", 9, QFont.Bold)
 
-        self.num_sliders = 0
-        self.num_rows = num_rows
-        self.positions = []
-
-        self.num_sliders = len(self.jsp.free_joints.keys())
-
-        # if desired num of rows wasn't set, add
-        if self.num_rows == 0:
-            self.num_rows = self.num_sliders
-
-        self.slider_it = 0
-
-        ### Sliders ###
+        ### Generate sliders ###
+        sliders = []
         for name in self.jsp.joint_list:
             if name not in self.jsp.free_joints:
                 continue
@@ -299,19 +289,26 @@ class JointStatePublisherGui(QWidget):
 
             joint_layout.addWidget(slider)
 
-            self.gridlayout.addLayout(joint_layout, self.slider_it % self.num_rows,
-                                      self.num_sliders / self.num_rows)
-            self.positions.append((self.slider_it % self.num_rows,
-                                   self.num_sliders/self.num_rows))
-            self.slider_it += 1
-
             self.joint_map[name] = {'slidervalue': 0, 'display': display,
                                     'slider': slider, 'joint': joint}
             # Connect to the signal provided by QSignal
             slider.valueChanged.connect(self.onValueChanged)
+            sliders.append(joint_layout)
+
+        self.num_rows = num_rows
+        self.num_rows = 17
+        # if desired num of rows wasn't set, add
+        if self.num_rows == 0:
+            self.num_rows = len(sliders) # equals VBoxLayout
+
+        self.positions = [(y, x) for x in range(int((math.ceil(float(len(sliders))/self.num_rows)))) for y in range(self.num_rows)] # I'm sorry
+
+        for item, pos in zip(sliders, self.positions):
+            self.gridlayout.addLayout(item, *pos)
 
         # Set zero positions read from parameters
         self.center()
+
 
         # Synchronize slider and displayed value
         self.sliderUpdate(None)
@@ -329,8 +326,9 @@ class JointStatePublisherGui(QWidget):
         self.ctrbutton.clicked.connect(self.center_event)
         self.vlayout.addWidget(self.ctrbutton)
         self.maxrowsupdown = QSpinBox()
-        self.maxrowsupdown.setMinimum(0)
+        self.maxrowsupdown.setMinimum(1)
         self.maxrowsupdown.setValue(self.num_rows)
+        self.maxrowsupdown.lineEdit().setReadOnly(True)  # don't edit the number by hand to avoid weird resize of window
         self.maxrowsupdown.valueChanged.connect(self.reorggrid_event)
         self.vlayout.addWidget(self.maxrowsupdown)
         rospy.logwarn(self.positions)
@@ -363,8 +361,6 @@ class JointStatePublisherGui(QWidget):
             joint_info['slider'].setValue(self.valueToSlider(joint['zero'], joint))
 
     def reorggrid_event(self, event):
-        rospy.logerr(event)
-        rospy.logerr('num sliders: ' + str(self.num_sliders))
         self.reorganize_grid(event)
 
     def reorganize_grid(self, number_of_rows):
@@ -377,10 +373,8 @@ class JointStatePublisherGui(QWidget):
             items.append(item)
             self.gridlayout.removeItem(item)
 
-        self.positions = [(y, x) for x in range((self.num_sliders / number_of_rows) + 1) for y in range(number_of_rows)]
-        self.positions = self.positions[:self.num_sliders]
-
-        assert self.num_sliders == len(items)
+        self.positions = [(y, x) for x in range((len(items) / number_of_rows) + 1) for y in range(number_of_rows)]
+        self.positions = self.positions[:len(items)]
 
         rospy.logwarn(self.positions)
 
