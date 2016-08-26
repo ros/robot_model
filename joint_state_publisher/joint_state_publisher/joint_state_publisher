@@ -253,13 +253,20 @@ class JointStatePublisherGui(QWidget):
         self.jsp = jsp
         self.joint_map = {}
         self.vlayout = QVBoxLayout(self)
-        self.box_layout = QGridLayout()
+        self.gridlayout = QGridLayout()
         font = QFont("Helvetica", 9, QFont.Bold)
 
         self.num_sliders = 0
         self.num_rows = num_rows
-        self.num_rows = 17
         self.positions = []
+
+        self.num_sliders = len(self.jsp.free_joints.keys())
+
+        # if desired num of rows wasn't set, add
+        if self.num_rows == 0:
+            self.num_rows = self.num_sliders
+
+        self.slider_it = 0
 
         ### Sliders ###
         for name in self.jsp.joint_list:
@@ -292,15 +299,11 @@ class JointStatePublisherGui(QWidget):
 
             joint_layout.addWidget(slider)
 
-            if self.num_rows == 0:
-                self.box_layout.addLayout(joint_layout, self.num_sliders, 0) # equivalent to VBoxLayout
-                self.positions.append((self.num_sliders, 0))
-            else:
-                self.box_layout.addLayout(joint_layout, self.num_sliders % self.num_rows,
-                                          self.num_sliders/self.num_rows)
-                self.positions.append((self.num_sliders % self.num_rows,
-                                          self.num_sliders/self.num_rows))
-            self.num_sliders += 1
+            self.gridlayout.addLayout(joint_layout, self.slider_it % self.num_rows,
+                                      self.num_sliders / self.num_rows)
+            self.positions.append((self.slider_it % self.num_rows,
+                                   self.num_sliders/self.num_rows))
+            self.slider_it += 1
 
             self.joint_map[name] = {'slidervalue': 0, 'display': display,
                                     'slider': slider, 'joint': joint}
@@ -316,7 +319,7 @@ class JointStatePublisherGui(QWidget):
         # Set up a signal for updating the sliders based on external joint info
         self.sliderUpdateTrigger.connect(self.updateSliders)
 
-        self.vlayout.addLayout(self.box_layout)
+        self.vlayout.addLayout(self.gridlayout)
 
         ### Buttons ###
         self.randbutton = QPushButton('Randomize', self)
@@ -370,9 +373,9 @@ class JointStatePublisherGui(QWidget):
 
         items = []
         for pos in self.positions:
-            item = self.box_layout.itemAtPosition(*pos)
+            item = self.gridlayout.itemAtPosition(*pos)
             items.append(item)
-            self.box_layout.removeItem(item)
+            self.gridlayout.removeItem(item)
 
         self.positions = [(y, x) for x in range((self.num_sliders / number_of_rows) + 1) for y in range(number_of_rows)]
         self.positions = self.positions[:self.num_sliders]
@@ -382,7 +385,7 @@ class JointStatePublisherGui(QWidget):
         rospy.logwarn(self.positions)
 
         for item, pos in zip(items, self.positions):
-            self.box_layout.addLayout(item, *pos)
+            self.gridlayout.addLayout(item, *pos)
 
     def randomize_event(self, event):
         self.randomize()
