@@ -363,8 +363,6 @@ class JointStatePublisherGui(QWidget):
     def reorganize_grid(self, number_of_rows):
         rospy.logerr("Number of rows: " + str(number_of_rows))
         rospy.logerr("Number of rows: " + str(len(self.positions)))
-        #positions = [(x, y) for x in range(number_of_rows) for y in range(self.num_sliders/number_of_rows)]
-        #rospy.logerr(len(positions))
 
         items = []
         for pos in self.positions:
@@ -381,7 +379,6 @@ class JointStatePublisherGui(QWidget):
 
         for item, pos in zip(items, self.positions):
             self.box_layout.addLayout(item, *pos)
-
 
     def randomize_event(self, event):
         self.randomize()
