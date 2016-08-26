@@ -5,7 +5,6 @@ import random
 
 from python_qt_binding.QtCore import Qt
 from python_qt_binding.QtCore import Signal
-from python_qt_binding.QtCore import QRect
 from python_qt_binding.QtGui import QFont
 from python_qt_binding.QtWidgets import QApplication
 from python_qt_binding.QtWidgets import QHBoxLayout
@@ -14,7 +13,8 @@ from python_qt_binding.QtWidgets import QLineEdit
 from python_qt_binding.QtWidgets import QPushButton
 from python_qt_binding.QtWidgets import QSlider
 from python_qt_binding.QtWidgets import QVBoxLayout
-from python_qt_binding.QtWidgets import QGridLayout
+#from python_qt_binding.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QGridLayout
 from python_qt_binding.QtWidgets import QSpinBox
 from python_qt_binding.QtWidgets import QWidget
 
@@ -257,6 +257,7 @@ class JointStatePublisherGui(QWidget):
         self.num_sliders = 0
         self.num_rows = num_rows
         self.num_rows = 17
+        self.positions = []
 
         ### Sliders ###
         for name in self.jsp.joint_list:
@@ -291,9 +292,12 @@ class JointStatePublisherGui(QWidget):
 
             if self.num_rows == 0:
                 self.box_layout.addLayout(joint_layout, self.num_sliders, 0) # equivalent to VBoxLayout
+                self.positions.append((self.num_sliders, 0))
             else:
                 self.box_layout.addLayout(joint_layout, self.num_sliders % self.num_rows,
                                           self.num_sliders/self.num_rows)
+                self.positions.append((self.num_sliders % self.num_rows,
+                                          self.num_sliders/self.num_rows))
             self.num_sliders += 1
 
             self.joint_map[name] = {'slidervalue': 0, 'display': display,
@@ -321,8 +325,8 @@ class JointStatePublisherGui(QWidget):
         self.maxrowsupdown.setMinimum(0)
         self.maxrowsupdown.setValue(self.num_rows)
         self.maxrowsupdown.valueChanged.connect(self.reorggrid_event)
-
         self.box_layout.addWidget(self.maxrowsupdown)
+        rospy.logwarn(self.positions)
 
     def onValueChanged(self, event):
         # A slider value was changed, but we need to change the joint_info metadata.
@@ -353,10 +357,30 @@ class JointStatePublisherGui(QWidget):
 
     def reorggrid_event(self, event):
         rospy.logerr(event)
+        rospy.logerr('num sliders: ' + str(self.num_sliders))
         self.reorganize_grid(event)
 
     def reorganize_grid(self, number_of_rows):
         rospy.logerr("Number of rows: " + str(number_of_rows))
+        rospy.logerr("Number of rows: " + str(len(self.positions)))
+        #positions = [(x, y) for x in range(number_of_rows) for y in range(self.num_sliders/number_of_rows)]
+        #rospy.logerr(len(positions))
+
+        items = []
+        for pos in self.positions:
+            item = self.box_layout.itemAtPosition(*pos)
+            items.append(item)
+            self.box_layout.removeItem(item)
+
+        self.positions = [(y, x) for x in range((self.num_sliders / number_of_rows) + 1) for y in range(number_of_rows)]
+        self.positions = self.positions[:self.num_sliders]
+
+        assert self.num_sliders == len(items)
+
+        rospy.logwarn(self.positions)
+
+        for item, pos in zip(items, self.positions):
+            self.box_layout.addLayout(item, *pos)
 
 
     def randomize_event(self, event):
