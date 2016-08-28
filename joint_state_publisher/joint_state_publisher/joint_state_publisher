@@ -295,13 +295,16 @@ class JointStatePublisherGui(QWidget):
             slider.valueChanged.connect(self.onValueChanged)
             sliders.append(joint_layout)
 
+        rospy.logerr('NUMBER OF SLIDERS ' + str(len(sliders)))
         self.num_rows = num_rows
         self.num_rows = 17
         # if desired num of rows wasn't set, add
         if self.num_rows == 0:
-            self.num_rows = len(sliders) # equals VBoxLayout
+            self.num_rows = len(sliders)  # equals VBoxLayout
 
-        self.positions = [(y, x) for x in range(int((math.ceil(float(len(sliders))/self.num_rows)))) for y in range(self.num_rows)] # I'm sorry
+        self.positions = [(y, x) for x in range(int((math.ceil(float(len(sliders))/self.num_rows)))) for y in range(self.num_rows)]  # I'm sorry
+        self.positions = self.positions[:len(sliders)]
+        rospy.logerr('NUMBER OF positions ' + str(len(self.positions)))
 
         for item, pos in zip(sliders, self.positions):
             self.gridlayout.addLayout(item, *pos)
@@ -327,8 +330,9 @@ class JointStatePublisherGui(QWidget):
         self.vlayout.addWidget(self.ctrbutton)
         self.maxrowsupdown = QSpinBox()
         self.maxrowsupdown.setMinimum(1)
+        self.maxrowsupdown.setMaximum(len(sliders))
         self.maxrowsupdown.setValue(self.num_rows)
-        self.maxrowsupdown.lineEdit().setReadOnly(True)  # don't edit the number by hand to avoid weird resize of window
+        self.maxrowsupdown.lineEdit().setReadOnly(True)  # don't edit it by hand to avoid weird resizing of window
         self.maxrowsupdown.valueChanged.connect(self.reorggrid_event)
         self.vlayout.addWidget(self.maxrowsupdown)
         rospy.logwarn(self.positions)
@@ -364,8 +368,9 @@ class JointStatePublisherGui(QWidget):
         self.reorganize_grid(event)
 
     def reorganize_grid(self, number_of_rows):
-        rospy.logerr("Number of rows: " + str(number_of_rows))
-        rospy.logerr("Number of rows: " + str(len(self.positions)))
+        self.num_rows = number_of_rows
+        rospy.logerr("Number of rows: " + str(self.num_rows))
+        rospy.logerr("len positions: " + str(len(self.positions)))
 
         items = []
         for pos in self.positions:
@@ -373,7 +378,7 @@ class JointStatePublisherGui(QWidget):
             items.append(item)
             self.gridlayout.removeItem(item)
 
-        self.positions = [(y, x) for x in range((len(items) / number_of_rows) + 1) for y in range(number_of_rows)]
+        self.positions = [(y, x) for x in range(int((math.ceil(float(len(items)) / self.num_rows)))) for y in range(self.num_rows)]
         self.positions = self.positions[:len(items)]
 
         rospy.logwarn(self.positions)
