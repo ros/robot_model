@@ -121,8 +121,9 @@ class JointStatePublisher():
         use_gui = get_param("use_gui", False)
 
         if use_gui:
+            num_rows = get_param("num_rows", 0)
             self.app = QApplication(sys.argv)
-            self.gui = JointStatePublisherGui("Joint State Publisher", self)
+            self.gui = JointStatePublisherGui("Joint State Publisher", self, num_rows)
             self.gui.show()
         else:
             self.gui = None
@@ -295,7 +296,6 @@ class JointStatePublisherGui(QWidget):
 
         rospy.logerr('NUMBER OF SLIDERS ' + str(len(sliders)))
         self.num_rows = num_rows
-        self.num_rows = 17
         # if desired num of rows wasn't set, add
         if self.num_rows == 0:
             self.num_rows = len(sliders)  # equals VBoxLayout
