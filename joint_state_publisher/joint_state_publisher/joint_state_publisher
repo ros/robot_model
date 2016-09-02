@@ -12,10 +12,8 @@ from python_qt_binding.QtWidgets import QLabel
 from python_qt_binding.QtWidgets import QLineEdit
 from python_qt_binding.QtWidgets import QPushButton
 from python_qt_binding.QtWidgets import QSlider
-#from python_qt_binding.QtWidgets import QVBoxLayout
-from PyQt5.QtWidgets import QVBoxLayout
-#from python_qt_binding.QtWidgets import QGridLayout
-from PyQt5.QtWidgets import QGridLayout
+from python_qt_binding.QtWidgets import QVBoxLayout
+from python_qt_binding.QtWidgets import QGridLayout
 from python_qt_binding.QtWidgets import QSpinBox
 from python_qt_binding.QtWidgets import QWidget
 
