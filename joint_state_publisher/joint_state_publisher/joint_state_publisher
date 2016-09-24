@@ -300,8 +300,7 @@ class JointStatePublisherGui(QWidget):
         if self.num_rows == 0:
             self.num_rows = len(sliders)  # equals VBoxLayout
 
-        self.positions = [(y, x) for x in range(int((math.ceil(float(len(sliders))/self.num_rows)))) for y in range(self.num_rows)]  # I'm sorry
-        self.positions = self.positions[:len(sliders)]
+        self.positions = self.generate_grid_positions(len(sliders), self.num_rows)
         rospy.logerr('NUMBER OF positions ' + str(len(self.positions)))
 
         for item, pos in zip(sliders, self.positions):
@@ -309,7 +308,6 @@ class JointStatePublisherGui(QWidget):
 
         # Set zero positions read from parameters
         self.center()
-
 
         # Synchronize slider and displayed value
         self.sliderUpdate(None)
@@ -376,13 +374,18 @@ class JointStatePublisherGui(QWidget):
             items.append(item)
             self.gridlayout.removeItem(item)
 
-        self.positions = [(y, x) for x in range(int((math.ceil(float(len(items)) / self.num_rows)))) for y in range(self.num_rows)]
-        self.positions = self.positions[:len(items)]
+        self.positions = self.generate_grid_positions(len(items), self.num_rows)
 
         rospy.logwarn(self.positions)
 
         for item, pos in zip(items, self.positions):
             self.gridlayout.addLayout(item, *pos)
+
+    def generate_grid_positions(self, num_items, num_rows):
+        positions = [(y, x) for x in range(int((math.ceil(float(num_items) / num_rows)))) for y in range(num_rows)]
+        positions = positions[:num_items]
+        return positions
+
 
     def randomize_event(self, event):
         self.randomize()
