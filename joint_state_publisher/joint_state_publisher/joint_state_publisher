@@ -294,15 +294,13 @@ class JointStatePublisherGui(QWidget):
             slider.valueChanged.connect(self.onValueChanged)
             sliders.append(joint_layout)
 
-        rospy.logerr('NUMBER OF SLIDERS ' + str(len(sliders)))
+        # Determine number of rows to be used in grid
         self.num_rows = num_rows
-        # if desired num of rows wasn't set, add
+        # if desired num of rows wasn't set, default behaviour is a vertical layout
         if self.num_rows == 0:
             self.num_rows = len(sliders)  # equals VBoxLayout
-
+        # Generate positions in grid and place sliders there
         self.positions = self.generate_grid_positions(len(sliders), self.num_rows)
-        rospy.logerr('NUMBER OF positions ' + str(len(self.positions)))
-
         for item, pos in zip(sliders, self.positions):
             self.gridlayout.addLayout(item, *pos)
 
@@ -317,7 +315,8 @@ class JointStatePublisherGui(QWidget):
 
         self.vlayout.addLayout(self.gridlayout)
 
-        ### Buttons ###
+        # Buttons for randomizing and centering sliders and
+        # Spinbox for on-the-fly selecting number of rows
         self.randbutton = QPushButton('Randomize', self)
         self.randbutton.clicked.connect(self.randomize_event)
         self.vlayout.addWidget(self.randbutton)
@@ -331,7 +330,6 @@ class JointStatePublisherGui(QWidget):
         self.maxrowsupdown.lineEdit().setReadOnly(True)  # don't edit it by hand to avoid weird resizing of window
         self.maxrowsupdown.valueChanged.connect(self.reorggrid_event)
         self.vlayout.addWidget(self.maxrowsupdown)
-        rospy.logwarn(self.positions)
 
     def onValueChanged(self, event):
         # A slider value was changed, but we need to change the joint_info metadata.
@@ -365,19 +363,16 @@ class JointStatePublisherGui(QWidget):
 
     def reorganize_grid(self, number_of_rows):
         self.num_rows = number_of_rows
-        rospy.logerr("Number of rows: " + str(self.num_rows))
-        rospy.logerr("len positions: " + str(len(self.positions)))
 
+        # Remove items from layout (won't destroy them!)
         items = []
         for pos in self.positions:
             item = self.gridlayout.itemAtPosition(*pos)
             items.append(item)
             self.gridlayout.removeItem(item)
 
+        # Generate new positions for sliders and place them in their new spots
         self.positions = self.generate_grid_positions(len(items), self.num_rows)
-
-        rospy.logwarn(self.positions)
-
         for item, pos in zip(items, self.positions):
             self.gridlayout.addLayout(item, *pos)
 
@@ -385,7 +380,6 @@ class JointStatePublisherGui(QWidget):
         positions = [(y, x) for x in range(int((math.ceil(float(num_items) / num_rows)))) for y in range(num_rows)]
         positions = positions[:num_items]
         return positions
-
 
     def randomize_event(self, event):
         self.randomize()
