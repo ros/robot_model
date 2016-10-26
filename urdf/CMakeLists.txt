@@ -12,10 +12,23 @@ find_package(TinyXML REQUIRED)
 
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
-  INCLUDE_DIRS include ${TinyXML_INLCLUDE_DIRS}
+  INCLUDE_DIRS include ${TinyXML_INLCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/include
   CATKIN_DEPENDS rosconsole_bridge roscpp
   DEPENDS urdfdom_headers urdfdom Boost
 )
+
+
+### for Wily: maintain compatibility between urdfdom 0.3 and 0.4 (definining SharedPtr types)
+if( "0.4.0" VERSION_GREATER "${urdfdom_headers_VERSION}")
+  set(HAVE_URDFDOM_4 0)
+else()
+  set(HAVE_URDFDOM_4 1)
+endif()
+set(generated_compat_header "${CATKIN_DEVEL_PREFIX}/include/${PROJECT_NAME}/urdfdom_compatibility.h")
+include_directories("${CATKIN_DEVEL_PREFIX}/include")
+configure_file(urdfdom_compatibility.h.in "${generated_compat_header}" @ONLY)
+install(FILES ${generated_compat_header} DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
 
 include_directories(
   include
