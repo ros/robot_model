@@ -102,10 +102,14 @@ class JointStatePublisher():
 
 
         use_gui = get_param("use_gui", False)
-
+	gui_caption = get_param("gui_caption",False) # add 
+	
         if use_gui:
             self.app = wx.App()
-            self.gui = JointStatePublisherGui("Joint State Publisher", self)
+            if gui_caption:
+            	self.gui = JointStatePublisherGui(gui_caption, self)
+            else:
+	        self.gui = JointStatePublisherGui("joint State Publisher", self)
             self.gui.Show()
         else:
             self.gui = None
