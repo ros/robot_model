@@ -75,9 +75,11 @@ URDF_TYPEDEF_CLASS_POINTER(ModelInterface);
 
 #else // urdfdom <= 0.4
 
+namespace urdf {
 typedef std::shared_ptr<ModelInterface> ModelInterfaceSharedPtr;
 typedef std::shared_ptr<const ModelInterface> ModelInterfaceConstSharedPtr;
 typedef std::weak_ptr<ModelInterface> ModelInterfaceWeakPtr;
+}
 
 #endif // urdfdom > 0.4
 
