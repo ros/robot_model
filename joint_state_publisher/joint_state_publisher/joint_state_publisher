@@ -49,15 +49,26 @@ class JointStatePublisher():
                 if jtype == 'continuous':
                     minval = -pi
                     maxval = pi
+                    try:
+                        limit = child.getElementsByTagName('limit')[0]
+                    	minVel = 0
+                        maxVel = float(limit.getAttribute('velocity'))
+		    except:
+                        rospy.logwarn("%s is not fixed, is continuous, but velocity limits are not specified!" % name)
+                        continue
                 else:
                     try:
                         limit = child.getElementsByTagName('limit')[0]
                         minval = float(limit.getAttribute('lower'))
                         maxval = float(limit.getAttribute('upper'))
+                        minVel = 0
+                        maxVel = float(limit.getAttribute('velocity'))
+                        
                     except:
                         rospy.logwarn("%s is not fixed, nor continuous, but limits are not specified!" % name)
                         continue
-
+		rospy.logdebug("maxVel =  %f !!!!!!!!!!!" % maxVel)
+		
                 safety_tags = child.getElementsByTagName('safety_controller')
                 if use_small and len(safety_tags)==1:
                     tag = safety_tags[0]
@@ -88,7 +99,7 @@ class JointStatePublisher():
                 else:
                     zeroval = 0
 
-                joint = {'min':minval, 'max':maxval, 'zero':zeroval}
+                joint = {'min':minval, 'max':maxval, 'zero':zeroval, 'min_vel':minVel, 'max_vel':maxVel}
                 if pub_def_positions:
                     joint['position'] = zeroval
                 if pub_def_vels:
@@ -102,17 +113,21 @@ class JointStatePublisher():
 
 
         use_gui = get_param("use_gui", False)
-	gui_caption = get_param("gui_caption",False) # add 
+        gui_caption = get_param("gui_caption",False) #  gui_caption paramter 
 	
         if use_gui:
             self.app = wx.App()
             if gui_caption:
-            	self.gui = JointStatePublisherGui(gui_caption, self)
+            	self.gui = JointStatePublisherGui(gui_caption+": Position", self,"position")
+            	self.gui_vel = JointStatePublisherGui(gui_caption+": Velocity", self,"velocity")
             else:
-	        self.gui = JointStatePublisherGui("joint State Publisher", self)
+	        self.gui = JointStatePublisherGui("joint State Publisher: Position", self,"position")
+	        self.gui_vel = JointStatePublisherGui("joint State Publisher: Velocity", self,"velocity")
             self.gui.Show()
+            self.gui_vel.Show()
         else:
             self.gui = None
+            self.gui_vel = None
 
         source_list = get_param("source_list", [])
         self.sources = []
@@ -151,7 +166,7 @@ class JointStatePublisher():
         if self.gui is not None:
             # post an event here instead of directly calling the update_sliders method, to switch to the wx thread
             wx.PostEvent(self.gui.GetEventHandler(), self.gui.UpdateSlidersEvent())
-
+            wx.PostEvent(self.gui_vel.GetEventHandler(), self.gui_vel.UpdateSlidersEvent())
 
     def loop(self):
         hz = get_param("rate", 10) # 10hz
@@ -169,7 +184,7 @@ class JointStatePublisher():
 
             # Initialize msg.position, msg.velocity, and msg.effort.
             has_position = len(self.dependent_joints.items()) > 0
-            has_velocity = False
+            has_velocity = has_position
             has_effort = False
             for (name,joint) in self.free_joints.items():
                 if not has_position and 'position' in joint:
@@ -212,7 +227,7 @@ class JointStatePublisher():
                 if has_effort and 'effort' in joint:
                     msg.effort[i] = joint['effort']
 
-            self.pub.publish(msg)
+            self.pub.publish(msg) #####
             r.sleep()
 
     def update(self, delta):
@@ -233,7 +248,8 @@ class JointStatePublisher():
                     joint['forward'] = not forward
 
 class JointStatePublisherGui(wx.Frame):
-    def __init__(self, title, jsp):
+    def __init__(self, title, jsp, cmd_type):
+    	self.type = cmd_type
         wx.Frame.__init__(self, None, -1, title, (-1, -1));
         self.jsp = jsp
         self.joint_map = {}
@@ -294,7 +310,10 @@ class JointStatePublisherGui(wx.Frame):
             purevalue = joint_info['slidervalue']
             joint = joint_info['joint']
             value = self.sliderToValue(purevalue, joint)
-            joint['position'] = value
+            if self.type == "position":    
+	            joint['position'] = value
+	    if self.type == "velocity":    
+	            joint['velocity'] = value
         self.update_sliders()
 
     def updateSliders(self, event):
@@ -303,10 +322,14 @@ class JointStatePublisherGui(wx.Frame):
     def update_sliders(self):
         for (name,joint_info) in self.joint_map.items():
             joint = joint_info['joint']
-            joint_info['slidervalue'] = self.valueToSlider(joint['position'],
-                                                           joint)
-            joint_info['slider'].SetValue(joint_info['slidervalue'])
-            joint_info['display'].SetValue("%.2f"%joint['position'])
+            if self.type == "position": 
+            	joint_info['slidervalue'] = self.valueToSlider(joint['position'],joint)
+            	joint_info['slider'].SetValue(joint_info['slidervalue'])
+           	joint_info['display'].SetValue("%.2f"%joint['position'])
+            if self.type == "velocity": 
+            	joint_info['slidervalue'] = self.valueToSlider(joint['velocity'],joint)	
+            	joint_info['slider'].SetValue(joint_info['slidervalue'])
+           	joint_info['display'].SetValue("%.2f"%joint['velocity'])
 
     def center_event(self, event):
         self.center()
@@ -315,7 +338,8 @@ class JointStatePublisherGui(wx.Frame):
         rospy.loginfo("Centering")
         for (name,joint_info) in self.joint_map.items():
             joint = joint_info['joint']
-            joint_info['slidervalue'] = self.valueToSlider(joint['zero'], joint)
+	    joint_info['slidervalue'] = self.valueToSlider(joint['zero'], joint)
+
         self.update_values()
 
     def randomize_event(self, event):
@@ -325,7 +349,10 @@ class JointStatePublisherGui(wx.Frame):
         rospy.loginfo("Randomizing")
         for (name,joint_info) in self.joint_map.items():
             joint = joint_info['joint']
-            joint_info['slidervalue'] = self.valueToSlider(random.uniform(joint['min'], joint['max']), joint)
+            if self.type == "position": 
+	    	joint_info['slidervalue'] = self.valueToSlider(random.uniform(joint['min'], joint['max']), joint)
+	    if self.type == "velocity": 
+	    	joint_info['slidervalue'] = self.valueToSlider(random.uniform(joint['min_vel'], joint['max_vel']), joint)
         self.update_values()
 
 
@@ -335,12 +362,17 @@ class JointStatePublisherGui(wx.Frame):
         self.update_values()
 
     def valueToSlider(self, value, joint):
-        return (value - joint['min']) * float(RANGE) / (joint['max'] - joint['min'])
+    	if self.type == "position": 
+        	return (value - joint['min']) * float(RANGE) / (joint['max'] - joint['min'])
+    	if self.type == "velocity": 
+        	return (value - joint['min_vel']) * float(RANGE) / (joint['max_vel'] - joint['min_vel'])
 
     def sliderToValue(self, slider, joint):
         pctvalue = slider / float(RANGE)
-        return joint['min'] + (joint['max']-joint['min']) * pctvalue
-
+        if self.type == "position": 
+        	return joint['min'] + (joint['max']-joint['min']) * pctvalue
+	if self.type == "velocity": 
+        	return joint['min_vel'] + (joint['max_vel']-joint['min_vel']) * pctvalue
 
 if __name__ == '__main__':
     try:
