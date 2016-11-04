@@ -77,11 +77,16 @@ typedef boost::shared_ptr<void> VoidSharedPtr;
 
 #else // urdfdom <= 0.4
 
+#include <urdf_model/types.h>
+#include <urdf_world/types.h>
+
+namespace urdf {
 typedef std::shared_ptr<ModelInterface> ModelInterfaceSharedPtr;
 typedef std::shared_ptr<const ModelInterface> ModelInterfaceConstSharedPtr;
 typedef std::weak_ptr<ModelInterface> ModelInterfaceWeakPtr;
 
 typedef std::shared_ptr<void> VoidSharedPtr;
+}
 
 #endif // urdfdom > 0.4
 
