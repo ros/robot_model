@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.3)
 project(urdf_parser_plugin)
 
 find_package(catkin REQUIRED)
-find_package(urdfdom_headers 0.4 REQUIRED)
+find_package(urdfdom_headers REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include

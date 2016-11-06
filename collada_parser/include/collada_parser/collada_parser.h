@@ -41,7 +41,7 @@
 #include <map>
 #include <boost/function.hpp>
 
-#include <urdf_world/types.h>
+#include <urdf/urdfdom_compatibility.h>
 
 
 namespace urdf {

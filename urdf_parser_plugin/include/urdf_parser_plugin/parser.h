@@ -37,7 +37,7 @@
 #ifndef URDF_PARSER_PLUGIN_H
 #define URDF_PARSER_PLUGIN_H
 
-#include <urdf_world/types.h>
+#include <urdf/urdfdom_compatibility.h>
 
 namespace urdf
 {
