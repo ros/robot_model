@@ -176,7 +176,11 @@ public:
         USERDATA(double scale) : scale(scale) {
         }
         double scale;
-        urdf::VoidSharedPtr p; ///< custom managed data
+#if URDFDOM_HEADERS_MAJOR_VERSION < 1
+        boost::shared_ptr<void> p; ///< custom managed data
+#else
+        std::shared_ptr<void> p; ///< custom managed data
+#endif
     };
 
     enum GeomType {
@@ -995,7 +999,11 @@ protected:
                     }
 
                     _getUserData(pdomjoint)->p = pjoint;
-                    _getUserData(pdomaxis)->p = urdf::VoidSharedPtr(new int(_model->joints_.size()));
+#if URDFDOM_HEADERS_MAJOR_VERSION < 1
+                    _getUserData(pdomaxis)->p = boost::shared_ptr<int>(new int(_model->joints_.size()));
+#else
+                    _getUserData(pdomaxis)->p = std::shared_ptr<int>(new int(_model->joints_.size()));
+#endif
                     _model->joints_[pjoint->name] = pjoint;
                     vjoints[ic] = pjoint;
                 }
