@@ -69,6 +69,8 @@ URDF_TYPEDEF_CLASS_POINTER(Sphere);
 URDF_TYPEDEF_CLASS_POINTER(Visual);
 
 URDF_TYPEDEF_CLASS_POINTER(ModelInterface);
+
+typedef boost::shared_ptr<void> VoidSharedPtr;
 }
 
 #undef URDF_TYPEDEF_CLASS_POINTER
@@ -78,6 +80,8 @@ URDF_TYPEDEF_CLASS_POINTER(ModelInterface);
 typedef std::shared_ptr<ModelInterface> ModelInterfaceSharedPtr;
 typedef std::shared_ptr<const ModelInterface> ModelInterfaceConstSharedPtr;
 typedef std::weak_ptr<ModelInterface> ModelInterfaceWeakPtr;
+
+typedef std::shared_ptr<void> VoidSharedPtr;
 
 #endif // urdfdom > 0.4
 
