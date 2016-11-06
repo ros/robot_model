@@ -17,6 +17,7 @@
 
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>liburdfdom-headers-dev</build_depend>
+  <build_depend>urdf</build_depend>
   <run_depend>liburdfdom-headers-dev</run_depend>
 
 </package>
