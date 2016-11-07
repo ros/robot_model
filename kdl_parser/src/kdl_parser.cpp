@@ -36,6 +36,7 @@
 
 #include "kdl_parser/kdl_parser.hpp"
 #include <urdf/model.h>
+#include <urdf/urdfdom_compatibility.h>
 #include <kdl/frames_io.hpp>
 #include <ros/console.h>
 
