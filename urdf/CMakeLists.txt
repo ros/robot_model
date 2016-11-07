@@ -11,6 +11,9 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(TinyXML REQUIRED)
 
 # Find version components
+if(NOT urdfdom_headers_VERSION)
+set(urdfdom_headers_VERSION "0.0.0")
+endif()
 string(REGEX REPLACE "^([0-9]+).*" "\\1" URDFDOM_HEADERS_MAJOR_VERSION "${urdfdom_headers_VERSION}")
 string(REGEX REPLACE "^[0-9]+\\.([0-9]+).*" "\\1" URDFDOM_HEADERS_MINOR_VERSION "${urdfdom_headers_VERSION}")
 string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" URDFDOM_HEADERS_REVISION_VERSION "${urdfdom_headers_VERSION}")
