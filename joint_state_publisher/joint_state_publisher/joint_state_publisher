@@ -67,7 +67,6 @@ class JointStatePublisher():
                     except:
                         rospy.logwarn("%s is not fixed, nor continuous, but limits are not specified!" % name)
                         continue
-		rospy.logdebug("maxVel =  %f !!!!!!!!!!!" % maxVel)
 		
                 safety_tags = child.getElementsByTagName('safety_controller')
                 if use_small and len(safety_tags)==1:
@@ -289,7 +288,7 @@ class JointStatePublisherGui(wx.Frame):
 
         ### Buttons ###
         self.randbutton = wx.Button(panel, 1, 'Randomize')
-        self.ctrbutton = wx.Button(panel, 2, 'Center')
+        self.ctrbutton = wx.Button(panel, 2, 'Zero')
         self.Bind(wx.EVT_SLIDER, self.sliderUpdate)
 
         wx.EVT_BUTTON(self, 1, self.randomize_event)
