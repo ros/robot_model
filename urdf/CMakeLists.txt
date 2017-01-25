@@ -21,6 +21,12 @@ set(generated_compat_header "${CATKIN_DEVEL_PREFIX}/include/${PROJECT_NAME}/urdf
 include_directories("${CATKIN_DEVEL_PREFIX}/include")
 configure_file(urdfdom_compatibility.h.in "${generated_compat_header}" @ONLY)
 
+include(CheckCXXCompilerFlag)
+check_cxx_compiler_flag(-std=c++11 HAS_STD_CPP11_FLAG)
+if(HAS_STD_CPP11_FLAG)
+    add_compile_options(-std=c++11)
+endif()
+
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
   INCLUDE_DIRS include ${TinyXML_INLCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/include
