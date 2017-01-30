@@ -86,7 +86,7 @@ bool Model::initFile(const std::string& filename)
 
 bool Model::initParam(const std::string& param)
 {
-  initParamWithNodeHandle(param, ros::NodeHandle());
+  return initParamWithNodeHandle(param, ros::NodeHandle());
 }
 
 bool Model::initParamWithNodeHandle(const std::string& param, const ros::NodeHandle& nh)
