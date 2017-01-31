@@ -43,6 +43,14 @@ TEST(collada_urdf, collada_from_urdf_file_works)
     ASSERT_TRUE(collada_urdf::WriteUrdfModelToColladaFile(robot_model, "pr2.dae"));
 }
 
+TEST(collada_urdf, collada_output_dir_does_not_exist)
+{
+    urdf::Model robot_model;
+
+    ASSERT_TRUE(robot_model.initFile("pr2.urdf"));
+    ASSERT_FALSE(collada_urdf::WriteUrdfModelToColladaFile(robot_model, "a/very/long/directory/path/that/should/not/exist/pr2.dae"));
+}
+
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
