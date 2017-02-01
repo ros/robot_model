@@ -67,6 +67,7 @@
 #include <fcntl.h>
 #endif
 
+#define typeof __typeof__
 #define FOREACH(it, v) for(typeof((v).begin())it = (v).begin(); it != (v).end(); (it)++)
 #define FOREACHC FOREACH
 
