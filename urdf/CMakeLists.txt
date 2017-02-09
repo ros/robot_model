@@ -10,8 +10,12 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(TinyXML REQUIRED)
 
-find_package(PkgConfig)
-pkg_check_modules(libpcrecpp libpcrecpp)
+if (ANDROID)
+  find_package(libpcrecpp)
+else()
+  find_package(PkgConfig)
+  pkg_check_modules(libpcrecpp libpcrecpp)
+endif()
 
 if("${urdfdom_headers_VERSION}" VERSION_LESS "1.0")
   # for Wily: maintain compatibility between urdfdom 0.3 and 0.4 (definining SharedPtr types)
