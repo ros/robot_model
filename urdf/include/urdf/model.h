@@ -43,6 +43,9 @@
 #include <urdf/urdfdom_compatibility.h>
 #include <tinyxml.h>
 
+#include <ros/ros.h>
+#include <std_srvs/Trigger.h>
+
 namespace urdf{
 
 class Model: public ModelInterface
@@ -56,8 +59,13 @@ public:
   bool initFile(const std::string& filename);
   /// \brief Load Model given the name of a parameter on the parameter server
   bool initParam(const std::string& param);
+  bool initParam(const std::string& param, bool reload_robot_model);
   /// \brief Load Model from a XML-string
   bool initString(const std::string& xmlstring);
+protected:
+  bool loadFromParameterServer(const std::string & param);
+  bool reloadModelCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
+  ros::ServiceServer reload_model_server_;
 };
 
 }

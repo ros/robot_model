@@ -1,4 +1,4 @@
-<?xml verison="1.0"?>
+<?xml version="1.0"?>
 <robot name="one_link">
   <link name="link1">
     <inertial>
