@@ -226,8 +226,8 @@ class JointStatePublisher():
                         recursive_mimic_chain_joints.append(parent)
                         param = self.dependent_joints[parent]
                         parent = param['parent']
+                        offset += factor * param.get('offset', 0)
                         factor *= param.get('factor', 1)
-                        offset = factor*offset + param.get('offset', 0)
                     joint = self.free_joints[parent]
 
                 if has_position and 'position' in joint:
