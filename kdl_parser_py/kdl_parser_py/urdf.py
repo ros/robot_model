@@ -31,12 +31,15 @@ def treeFromString(xml):
     return treeFromUrdfModel(urdf.URDF.from_xml_string(xml))
 
 def _toKdlPose(pose):
-    if pose and pose.rpy and len(pose.rpy) == 3 and pose.xyz and len(pose.xyz) == 3:
-        return kdl.Frame(
-              kdl.Rotation.RPY(*pose.rpy),
-              kdl.Vector(*pose.xyz))
-    else:
-        return kdl.Frame.Identity()
+    # URDF might have RPY OR XYZ unspecified. Both default to zeros
+    
+    rpy = pose.rpy if pose and pose.rpy and len(pose.rpy) == 3 else [0, 0, 0]
+    xyz = pose.xyz if pose and pose.xyz and len(pose.xyz) == 3 else [0, 0, 0]
+    print ("rpy", rpy, "xyz", xyz)
+    return kdl.Frame(
+          kdl.Rotation.RPY(*rpy),
+          kdl.Vector(*xyz))
+
 
 def _toKdlInertia(i):
     # kdl specifies the inertia in the reference frame of the link, the urdf
