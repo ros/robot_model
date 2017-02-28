@@ -35,7 +35,7 @@ def _toKdlPose(pose):
     
     rpy = pose.rpy if pose and pose.rpy and len(pose.rpy) == 3 else [0, 0, 0]
     xyz = pose.xyz if pose and pose.xyz and len(pose.xyz) == 3 else [0, 0, 0]
-    print ("rpy", rpy, "xyz", xyz)
+
     return kdl.Frame(
           kdl.Rotation.RPY(*rpy),
           kdl.Vector(*xyz))
