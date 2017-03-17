@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<urdf>
+  <robot name="mimic_cycle_robot">
+    <link name="link1"/>
+    <link name="link2"/>
+    <link name="link3"/>
+    <link name="link4"/>
+
+    <joint name="j12" type="revolute">
+      <mimic joint="j34"/>
+    </joint>
+    <joint name="j23" type="revolute">
+      <mimic joint="j12"/>
+    </joint>
+    <joint name="j34" type="revolute">
+      <mimic joint="j23"/>
+    </joint>
+  </robot>
+</urdf>
