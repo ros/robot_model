@@ -480,7 +480,7 @@ void addChildJointNamesXML(urdf::LinkConstSharedPtr link, ofstream& os)
       os << "  </transmission>" << endl;
 #ifdef GAZEBO_1_3
       os << "  <gazebo reference=\"" << (*child)->parent_joint->name << "\">" << endl;
-      os << "    <cfmDamping>0.4</cfmDamping>" << endl;
+      os << "    <implicitSpringDamper>0.4</implicitSpringDamper>" << endl;
       os << "  </gazebo>" << endl;
 #endif
     }
