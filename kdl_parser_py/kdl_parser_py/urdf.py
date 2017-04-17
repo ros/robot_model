@@ -1,4 +1,3 @@
-
 from __future__ import print_function
 
 import urdf_parser_py.urdf as urdf
