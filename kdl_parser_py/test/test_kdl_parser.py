@@ -30,10 +30,9 @@ class TestKdlParser(unittest.TestCase):
         self.assertEqual(chain.getSegment(0).getJoint().getName(), "gripper_extension")
         self.assertEqual(chain.getSegment(1).getName(), "right_gripper")
         self.assertEqual(chain.getSegment(1).getJoint().getName(), "right_gripper_joint")
-        
+
         inertia = chain.getSegment(1).getInertia()
         self.assertAlmostEqual(inertia.getCOG().z(), 3.0)
-        
 
 if __name__ == '__main__':
     rostest.run(PKG, NAME, TestKdlParser, sys.argv)

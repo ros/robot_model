@@ -31,7 +31,6 @@ def treeFromString(xml):
 
 def _toKdlPose(pose):
     # URDF might have RPY OR XYZ unspecified. Both default to zeros
-    
     rpy = pose.rpy if pose and pose.rpy and len(pose.rpy) == 3 else [0, 0, 0]
     xyz = pose.xyz if pose and pose.xyz and len(pose.xyz) == 3 else [0, 0, 0]
 
