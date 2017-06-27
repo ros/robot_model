@@ -41,8 +41,8 @@
 #define URDFDOM_HEADERS_MINOR_VERSION @URDFDOM_HEADERS_MINOR_VERSION@
 #define URDFDOM_HEADERS_REVISION_VERSION @URDFDOM_HEADERS_REVISION_VERSION@
 
-// for Wily: maintain compatibility between urdfdom 0.3 and 0.4 (definining SharedPtr types)
-#if URDFDOM_HEADERS_MAJOR_VERSION == 0 && URDFDOM_HEADERS_MINOR_VERSION <= 4
+// Define shared pointers for urdfdom 0.3 (Debian Jessie) and 0.4 (Ubuntu Xenial)
+#if URDFDOM_HEADERS_MAJOR_VERSION == 0 && URDFDOM_HEADERS_MINOR_VERSION >= 3
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
@@ -79,7 +79,7 @@ URDF_TYPEDEF_CLASS_POINTER(Model);
 
 #undef URDF_TYPEDEF_CLASS_POINTER
 
-#else // urdfdom <= 0.4
+#elif URDFDOM_HEADERS_MAJOR_VERSION == 1
 
 #include <urdf_model/types.h>
 #include <urdf_world/types.h>
@@ -97,6 +97,9 @@ typedef std::shared_ptr<const Model> ModelConstSharedPtr;
 typedef std::weak_ptr<Model> ModelWeakPtr;
 }
 
-#endif // urdfdom > 0.4
+#else
+  // Intentional error
+  Unsupported urdfdom version
+#endif // urdfdom version
 
 #endif // URDF_URDFDOM_COMPATIBILITY_
