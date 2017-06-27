@@ -79,7 +79,7 @@ URDF_TYPEDEF_CLASS_POINTER(Model);
 
 #undef URDF_TYPEDEF_CLASS_POINTER
 
-#else
+#else // urdfdom <= 0.4
 
 #include <urdf_model/types.h>
 #include <urdf_world/types.h>
