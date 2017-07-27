@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   urdf_parser_plugin pluginlib rosconsole_bridge roscpp cmake_modules)
 
 
-find_package(TinyXML REQUIRED)
+find_package(TinyXML2 REQUIRED)
 
 # Find version components
 if(NOT urdfdom_headers_VERSION)
@@ -25,7 +25,7 @@ add_compile_options(-std=c++11)
 
 catkin_package(
   LIBRARIES ${PROJECT_NAME}
-  INCLUDE_DIRS include ${TinyXML_INLCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/include
+  INCLUDE_DIRS include ${TinyXML2_INLCLUDE_DIRS} ${CATKIN_DEVEL_PREFIX}/include
   CATKIN_DEPENDS rosconsole_bridge roscpp
   DEPENDS urdfdom_headers urdfdom Boost
 )
@@ -37,13 +37,13 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   ${urdfdom_INCLUDE_DIRS}
   ${urdfdom_headers_INCLUDE_DIRS}
-  ${TinyXML_INCLUDE_DIRS}
+  ${TinyXML2_INCLUDE_DIRS}
   )
 
 link_directories(${Boost_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
 
 add_library(${PROJECT_NAME} src/model.cpp src/rosconsole_bridge.cpp)
-target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${catkin_LIBRARIES} ${urdfdom_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${TinyXML2_LIBRARIES} ${catkin_LIBRARIES} ${urdfdom_LIBRARIES})
 
 if(APPLE)
   set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
