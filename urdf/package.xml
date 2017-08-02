@@ -31,8 +31,6 @@
   <build_depend>rostest</build_depend>
   <build_depend>tinyxml</build_depend>
 
-  <build_export_depend>tinyxml</build_export_depend>
-
   <run_depend>liburdfdom-dev</run_depend>
   <run_depend>liburdfdom-headers-dev</run_depend>
   <run_depend>rosconsole_bridge</run_depend>
