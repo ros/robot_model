@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(urdf)
 
 find_package(Boost REQUIRED thread)
-find_package(urdfdom REQUIRED)
-find_package(urdfdom_headers REQUIRED)
+find_package(urdfdom_headers 0.4 REQUIRED)
+find_package(urdfdom 0.4 REQUIRED)
 find_package(catkin REQUIRED COMPONENTS
   urdf_parser_plugin pluginlib rosconsole_bridge roscpp cmake_modules)
 
@@ -42,7 +42,7 @@ include_directories(
 
 link_directories(${Boost_LIBRARY_DIRS} ${catkin_LIBRARY_DIRS})
 
-add_library(${PROJECT_NAME} src/model.cpp src/rosconsole_bridge.cpp)
+add_library(${PROJECT_NAME} src/model.cpp src/sensor.cpp src/rosconsole_bridge.cpp)
 target_link_libraries(${PROJECT_NAME} ${TinyXML_LIBRARIES} ${catkin_LIBRARIES} ${urdfdom_LIBRARIES})
 
 if(APPLE)
