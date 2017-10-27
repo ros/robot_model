@@ -28,7 +28,6 @@
   <build_depend>urdf_parser_plugin</build_depend>
   <build_depend>pluginlib</build_depend>
   <build_depend>cmake_modules</build_depend>
-  <build_depend>rostest</build_depend>
   <build_depend>tinyxml</build_depend>
 
   <exec_depend>liburdfdom-dev</exec_depend>
@@ -38,5 +37,7 @@
   <exec_depend>urdf_parser_plugin</exec_depend>
   <exec_depend>pluginlib</exec_depend>
   <exec_depend>tinyxml</exec_depend>
+
+  <test_depend>rostest</test_depend>
 
 </package>
